@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import { ChromePicker } from "react-color";
 import { produce } from "immer";
-import { saveAs } from 'file-saver'
+import { saveAs } from "file-saver";
 
 import {
   Text,
@@ -38,16 +38,16 @@ const Page = styled.div`
   align-items: center;
   align-self: center;
   min-height: 100vh;
-  width: 1050px; 
+  width: 850px;
 `;
 
 const Banner = styled.div`
   margin-top: 1rem;
-  margin-bottom: 1rem; 
+  margin-bottom: 1rem;
   height: 5rem;
   display: flex;
   align-self: start;
-  font-family: HudsonNYPro,sans-serif;
+  font-family: HudsonNYPro, sans-serif;
   img {
     height: 100%;
     width: auto;
@@ -94,7 +94,7 @@ const DrawerOpenButton = styled.div<{ isOpen: boolean }>`
   align-items: center;
   padding: 1rem;
   height: 100%;
-  right: ${({ isOpen }) => (isOpen ? "450px" : "0")};
+  right: ${({ isOpen }) => (isOpen ? "320px" : "0")};
   top: 0;
   padding-right: 20px;
   transition: 0.3s;
@@ -104,7 +104,8 @@ const DrawerOpenButton = styled.div<{ isOpen: boolean }>`
   &:hover {
     background: RGBA(0, 0, 0, 0.16);
   }
-  & div:first-child {
+
+  & svg:first-child {
     transition: 0.3s;
     transform: ${({ isOpen }) => (isOpen ? "rotate(180deg)" : "rotate(0)")};
   }
@@ -165,7 +166,7 @@ const LAYERS = {
 };
 
 export default function Main() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<any>(null);
   const [eraseActive, setEraseActive] = useState(false);
   const [colors, setColors] = useState({
     stroke: { hex: "#000" },
@@ -173,8 +174,8 @@ export default function Main() {
   });
   const [strokeWidth, setStrokeWidth] = useState(12);
   const [layers, setLayers] = useState({
-    hair: 'y_kraken_hair_01',
-    body: 'x_kaiju_01'
+    hair: "y_kraken_hair_01",
+    body: "x_kaiju_01",
   });
   const {
     isOpen: isControlsOpen,
@@ -185,7 +186,6 @@ export default function Main() {
   const onEraseMode = () => {
     if (canvasRef.current) {
       const newMode = !eraseActive;
-      // @ts-ignore
       canvasRef.current.eraseMode(newMode);
       setEraseActive(newMode);
     }
@@ -193,34 +193,32 @@ export default function Main() {
 
   const onClear = () => {
     if (canvasRef.current) {
-      // @ts-ignore
       canvasRef.current.clearCanvas();
     }
   };
 
   const onUndo = () => {
     if (canvasRef.current) {
-      // @ts-ignore
       canvasRef.current.undo();
     }
   };
 
   const onRedo = () => {
     if (canvasRef.current) {
-      // @ts-ignore
       canvasRef.current.redo();
     }
   };
 
   const onExport = () => {
     if (canvasRef.current) {
-      // @ts-ignore
-      canvasRef.current.exportImage("png").then((data) => {
-        saveAs(data, 'traits.png');
-      })
-      .catch((e: any) => {
-        console.log(e);
-      });
+      canvasRef.current
+        .exportImage("png")
+        .then((data: any) => {
+          saveAs(data, "traits.png");
+        })
+        .catch((e: any) => {
+          console.log(e);
+        });
     }
   };
 
@@ -251,8 +249,8 @@ export default function Main() {
   return (
     <Page>
       <Banner>
-        <img src='/memeland-logo-moving.gif' />
-        <img src='/memeland-text.png' />
+        <img src="/memeland-logo-moving.gif" />
+        <img src="/memeland-text.png" />
       </Banner>
       <CanvasContainer>
         <Controls>
@@ -266,16 +264,17 @@ export default function Main() {
             <Button onClick={onExport}>Export</Button>
           </Buttons>
           <SliderBox>
-            <Text>Stroke width: {strokeWidth}px</Text>
+            <Text mt={"2"}>Stroke width: {strokeWidth}px</Text>
             <Slider
               id="point-size-slider"
+              defaultValue={12}
               min={0}
               max={100}
               colorScheme=""
               onChange={(v: number) => setStrokeWidth(v)}
             >
               <SliderTrack bg="red.100">
-                <SliderFilledTrack bg='tomato' />
+                <SliderFilledTrack bg="tomato" />
               </SliderTrack>
               <SliderThumb boxSize={6}>
                 <Box as="img" src="/memeland-logo.png" />
@@ -285,7 +284,9 @@ export default function Main() {
           <Text>Stroke Color</Text>
           <ChromePicker
             color={colors.stroke}
-            onChange={(color: any) => handleColorChange(color, ColorType.Stroke)}
+            onChange={(color: any) =>
+              handleColorChange(color, ColorType.Stroke)
+            }
           />
         </Controls>
         <ReactSketchCanvas
@@ -295,8 +296,8 @@ export default function Main() {
             backgroundColor: colors.background?.hex ?? "transparent",
             backgroundImage: constructLayers([layers.hair, layers.body]),
           }}
-          width={'800px'}
-          height={'800px'}
+          width={"600px"}
+          height={"600px"}
           ref={canvasRef}
           strokeWidth={strokeWidth}
           strokeColor={colors.stroke?.hex ?? "black"}
@@ -310,7 +311,7 @@ export default function Main() {
         placement={"right"}
         onClose={onCloseControls}
         isOpen={isControlsOpen}
-        size="sm"
+        size="xs"
       >
         <DrawerContent>
           <DrawerCloseButton />
