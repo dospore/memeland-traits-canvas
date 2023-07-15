@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import styled from "styled-components";
 import { ReactSketchCanvas } from "react-sketch-canvas";
-import { ChromePicker } from "react-color";
+import { ChromePicker, AlphaPicker } from "react-color";
 import { produce } from "immer";
 import { saveAs } from "file-saver";
 
@@ -144,8 +144,8 @@ export default function Main() {
   const canvasRef = useRef<any>(null);
   const [eraseActive, setEraseActive] = useState(false);
   const [colors, setColors] = useState({
-    stroke: { hex: "#000" },
-    background: { hex: "transparent" },
+    stroke: "#000",
+    background: "transparent",
   });
   const [strokeWidth, setStrokeWidth] = useState(12);
   const [layers, setLayers] = useState({
@@ -200,10 +200,14 @@ export default function Main() {
   const handleColorChange = (color: any, type: ColorType) => {
     setColors(
       produce((colors) => {
+        let colorStr = color.hex
+        if(color.rgb.a !== 1){
+          colorStr = `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
+        }
         if (type === ColorType.Background) {
-          colors.background = color;
+          colors.background = colorStr;
         } else if (type === ColorType.Stroke) {
-          colors.stroke = color;
+          colors.stroke = colorStr;
         }
       }),
     );
@@ -269,14 +273,14 @@ export default function Main() {
           canvasColor={"transparent"}
           svgStyle={{
             backgroundSize: "cover",
-            backgroundColor: colors.background?.hex ?? "transparent",
+            backgroundColor: colors.background ?? "transparent",
             backgroundImage: constructLayers([layers.hair, layers.body]),
           }}
           width={"600px"}
           height={"600px"}
           ref={canvasRef}
           strokeWidth={strokeWidth}
-          strokeColor={colors.stroke?.hex ?? "black"}
+          strokeColor={colors.stroke}
           eraserWidth={strokeWidth}
         />
       </CanvasContainer>
