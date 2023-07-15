@@ -29,8 +29,6 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
-
 const Page = styled.div`
   display: flex;
   margin: auto;
@@ -86,29 +84,6 @@ const Layers = styled.div`
 const Layer = styled.img`
   width: 100%;
   cursor: pointer;
-`;
-
-const DrawerOpenButton = styled.div<{ isOpen: boolean }>`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  height: 100%;
-  right: ${({ isOpen }) => (isOpen ? "320px" : "0")};
-  top: 0;
-  padding-right: 20px;
-  transition: 0.3s;
-
-  cursor: pointer;
-
-  &:hover {
-    background: RGBA(0, 0, 0, 0.16);
-  }
-
-  & svg:first-child {
-    transition: 0.3s;
-    transform: ${({ isOpen }) => (isOpen ? "rotate(180deg)" : "rotate(0)")};
-  }
 `;
 
 const constructLayers = (layers: string[]) =>
@@ -261,6 +236,7 @@ export default function Main() {
             </Button>
             <Button onClick={onUndo}>Undo</Button>
             <Button onClick={onRedo}>Redo</Button>
+            <Button onClick={onOpenControls}>Change Base</Button>
             <Button onClick={onExport}>Export</Button>
           </Buttons>
           <SliderBox>
@@ -292,7 +268,7 @@ export default function Main() {
         <ReactSketchCanvas
           canvasColor={"transparent"}
           svgStyle={{
-            backgroundSize: "contain",
+            backgroundSize: "cover",
             backgroundColor: colors.background?.hex ?? "transparent",
             backgroundImage: constructLayers([layers.hair, layers.body]),
           }}
@@ -304,9 +280,6 @@ export default function Main() {
           eraserWidth={strokeWidth}
         />
       </CanvasContainer>
-      <DrawerOpenButton isOpen={isControlsOpen} onClick={onOpenControls}>
-        <ArrowLeftIcon />
-      </DrawerOpenButton>
       <Drawer
         placement={"right"}
         onClose={onCloseControls}
